@@ -1,0 +1,34 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "runapi-pixverse"
+version = "0.1.1"
+description = "RunAPI PixVerse SDK for text-to-video, image-to-video, reference editing, transitions, and video extension in JavaScript, Python, Ruby, Go, Java, and PHP"
+readme = "README.md"
+requires-python = ">=3.9"
+license = "Apache-2.0"
+authors = [{ name = "RunAPI", email = "contact@runapi.ai" }]
+keywords = ["runapi", "runapi-ai", "pixverse", "api", "sdk", "typescript", "python", "ruby", "golang", "java", "maven", "gradle", "video-generation", "text-to-video", "video-api", "pixverse-api"]
+dependencies = ["runapi-core>=0.3.5"]
+
+[project.urls]
+Homepage = "https://runapi.ai/models/pixverse"
+Documentation = "https://runapi.ai/docs/resources/sdks"
+Source = "https://github.com/runapi-ai/pixverse-sdk"
+Issues = "https://github.com/runapi-ai/pixverse-sdk/issues"
+Changelog = "https://github.com/runapi-ai/pixverse-sdk/blob/main/CHANGELOG.md"
+"Release Notes" = "https://github.com/runapi-ai/pixverse-sdk/releases/tag/python%2Fv0.1.1"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/runapi"]
+
+[tool.uv]
+package = true
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[tool.runapi]
+slug = "pixverse"
