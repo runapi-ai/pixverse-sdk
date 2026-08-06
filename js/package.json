@@ -3,7 +3,7 @@
   "runapi": {
     "slug": "pixverse"
   },
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "RunAPI PixVerse SDK for text-to-video, image-to-video, reference editing, transitions, and video extension in JavaScript, Python, Ruby, Go, Java, and PHP",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -31,7 +31,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@runapi.ai/core": "^0.3.1"
+    "@runapi.ai/core": "^0.3.2"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

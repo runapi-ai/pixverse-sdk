@@ -38,4 +38,25 @@ describe('PixVerse resources', () => {
     expect(mockHttp.request).toHaveBeenNthCalledWith(1, 'POST', `/api/v1/pixverse/${endpoint}`, { body: params });
     expect(mockHttp.request).toHaveBeenNthCalledWith(2, 'GET', `/api/v1/pixverse/${endpoint}/task_123`, {});
   });
+
+  it.each([
+    [TextToVideo, { aspect_ratio: '16:9' }],
+    [ImageToVideo, { first_frame_image_url: 'https://cdn.runapi.ai/public/samples/first.png' }],
+  ] as const)('validates enable_audio for %s', async (Resource, extra) => {
+    vi.mocked(mockHttp.request).mockResolvedValue({ id: 'task_123', status: 'processing' });
+    const resource = new Resource(mockHttp);
+
+    await resource.create({ ...common, ...extra, enable_audio: true } as never);
+    await resource.create({ ...common, ...extra, enable_audio: false } as never);
+
+    expect(mockHttp.request).toHaveBeenNthCalledWith(1, 'POST', expect.any(String), {
+      body: { ...common, ...extra, enable_audio: true },
+    });
+    expect(mockHttp.request).toHaveBeenNthCalledWith(2, 'POST', expect.any(String), {
+      body: { ...common, ...extra, enable_audio: false },
+    });
+    await expect(resource.create({ ...common, ...extra, enable_audio: 'true' } as never)).rejects.toThrow(
+      'enable_audio must be one of: true, false',
+    );
+  });
 });

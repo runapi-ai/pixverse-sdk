@@ -77,6 +77,51 @@ func TestImageToVideoCreateAndGet(t *testing.T) {
 	assertRequest(t, stub, "GET", "/api/v1/pixverse/image_to_video/task_123")
 }
 
+func TestVideoCreatesIncludeEnableAudio(t *testing.T) {
+	for _, tc := range []struct {
+		name   string
+		create func(*Client, context.Context, *bool) error
+	}{
+		{
+			name: "text-to-video",
+			create: func(client *Client, ctx context.Context, enableAudio *bool) error {
+				_, err := client.TextToVideo.Create(ctx, TextToVideoParams{
+					CommonVideoParams: commonParamsWithAudio(enableAudio), AspectRatio: AspectRatio169,
+				})
+				return err
+			},
+		},
+		{
+			name: "image-to-video",
+			create: func(client *Client, ctx context.Context, enableAudio *bool) error {
+				_, err := client.ImageToVideo.Create(ctx, ImageToVideoParams{
+					CommonVideoParams: commonParamsWithAudio(enableAudio), FirstFrameImageURL: "https://cdn.runapi.ai/public/samples/input.png",
+				})
+				return err
+			},
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			for _, enabled := range []bool{true, false} {
+				stub := &stubHTTPClient{}
+				if err := tc.create(NewClientWithHTTP(stub), context.Background(), &enabled); err != nil {
+					t.Fatal(err)
+				}
+				body := assertRequest(t, stub, "POST", stub.path)
+				if body["enable_audio"] != enabled {
+					t.Fatalf("enable_audio = %#v, want %t", body["enable_audio"], enabled)
+				}
+			}
+		})
+	}
+}
+
+func commonParamsWithAudio(enableAudio *bool) CommonVideoParams {
+	params := commonParams()
+	params.EnableAudio = enableAudio
+	return params
+}
+
 func TestEditVideoCreateAndGet(t *testing.T) {
 	stub := &stubHTTPClient{}
 	resource := NewClientWithHTTP(stub).EditVideo
