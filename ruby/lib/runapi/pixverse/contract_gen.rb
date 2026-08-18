@@ -17,6 +17,9 @@ module RunApi
               "max" => 15,
               "type" => "integer"
             },
+            "enable_audio" => {
+              "enum" => [true, false]
+            },
             "model" => {
               "required" => true
             },
@@ -52,6 +55,9 @@ module RunApi
               "min" => 1,
               "max" => 15,
               "type" => "integer"
+            },
+            "enable_audio" => {
+              "enum" => [true, false]
             },
             "model" => {
               "required" => true
@@ -161,6 +167,9 @@ module RunApi
               "min" => 1,
               "max" => 15,
               "type" => "integer"
+            },
+            "enable_audio" => {
+              "enum" => [true, false]
             },
             "first_frame_image_url" => {
               "required" => true

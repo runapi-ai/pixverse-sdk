@@ -24,6 +24,12 @@ export const contract = {
           "max": 15,
           "type": "integer"
         },
+        "enable_audio": {
+          "enum": [
+            true,
+            false
+          ]
+        },
         "model": {
           "required": true
         },
@@ -66,6 +72,12 @@ export const contract = {
           "min": 1,
           "max": 15,
           "type": "integer"
+        },
+        "enable_audio": {
+          "enum": [
+            true,
+            false
+          ]
         },
         "model": {
           "required": true
@@ -211,6 +223,12 @@ export const contract = {
           "min": 1,
           "max": 15,
           "type": "integer"
+        },
+        "enable_audio": {
+          "enum": [
+            true,
+            false
+          ]
         },
         "first_frame_image_url": {
           "required": true

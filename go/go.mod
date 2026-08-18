@@ -2,4 +2,4 @@ module github.com/runapi-ai/pixverse-sdk/go
 
 go 1.26
 
-require github.com/runapi-ai/core-sdk/go v0.2.18
+require github.com/runapi-ai/core-sdk/go v0.3.0

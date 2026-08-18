@@ -13,6 +13,9 @@ CONTRACT = {
                     "max": 15,
                     "type": "integer"
                 },
+                "enable_audio": {
+                    "enum": [True, False]
+                },
                 "model": {
                     "required": True
                 },
@@ -48,6 +51,9 @@ CONTRACT = {
                     "min": 1,
                     "max": 15,
                     "type": "integer"
+                },
+                "enable_audio": {
+                    "enum": [True, False]
                 },
                 "model": {
                     "required": True
@@ -157,6 +163,9 @@ CONTRACT = {
                     "min": 1,
                     "max": 15,
                     "type": "integer"
+                },
+                "enable_audio": {
+                    "enum": [True, False]
                 },
                 "first_frame_image_url": {
                     "required": True
