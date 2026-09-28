@@ -30,8 +30,7 @@ def common_params():
         "model": "pixverse-v6",
         "prompt": "A lantern crosses the night sky",
         "output_resolution": "720p",
-        "duration_seconds": 5,
-    }
+        "duration_seconds": 5}
 
 
 def test_auth_and_resource_accessors():
@@ -52,11 +51,10 @@ def test_auth_and_resource_accessors():
         ("image_to_video", "image_to_video", {"first_frame_image_url": "https://cdn.runapi.ai/public/samples/first.png"}, "first_frame_image_url"),
         ("edit_video", "edit_video", {"reference_image_urls": ["https://cdn.runapi.ai/public/samples/reference.png"], "aspect_ratio": "16:9"}, "reference_image_urls"),
         ("transition_video", "transition_video", {"first_frame_image_url": "https://cdn.runapi.ai/public/samples/first.png", "last_frame_image_url": "https://cdn.runapi.ai/public/samples/last.png"}, "last_frame_image_url"),
-        ("extend_video", "extend_video", {"source_task_id": "source_123"}, "source_task_id"),
-    ],
+        ("extend_video", "extend_video", {"source_task_id": "source_123"}, "source_task_id")],
 )
 def test_create_and_get_request_shape(resource_name, endpoint, extra, expected_key):
-    fake = FakeHttp({"id": "task_123", "status": "processing"}, {"id": "task_123", "status": "completed", "videos": [{"url": "https://cdn.runapi.ai/output.mp4"}]})
+    fake = FakeHttp({"id": "task_123", "status": "processing"}, {"id": "task_123", "status": "completed", "usage": {"cost": 0.05}, "videos": [{"url": "https://cdn.runapi.ai/output.mp4"}]})
     resource = getattr(PixVerseClient(api_key="k", http_client=fake), resource_name)
     params = {**common_params(), **extra}
 

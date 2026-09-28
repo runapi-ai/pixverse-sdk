@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import ai.runapi.core.RequestOptions;
-import ai.runapi.core.billing.TaskBillingFacts;
 import ai.runapi.core.errors.ValidationException;
 import ai.runapi.core.http.HttpRequest;
 import ai.runapi.core.http.HttpResponse;
@@ -83,7 +82,7 @@ class PixVerseClientTest {
 
   @Test
   void getDecodesTaskResponseAndExtraFields() {
-    CapturingTransport transport = new CapturingTransport("{\"id\":\"task_456\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}],\"billing\":{\"reservation\":{\"amount_cents\":12},\"settlement\":{\"charged_amount_cents\":11,\"amount_micro_cents\":1050000},\"refund\":{\"refunded_at\":\"2026-07-23T12:00:00.000000Z\"}},\"custom\":\"kept\"}");
+    CapturingTransport transport = new CapturingTransport("{\"id\":\"task_456\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}],\"custom\":\"kept\",\"usage\":{\"cost\":0.05}}");
     PixVerseClient client = PixVerseClient.builder().apiKey("sk-test").transport(transport).build();
 
     TextToVideoResponse response = client.textToVideo().get("task_456");
@@ -93,19 +92,14 @@ class PixVerseClientTest {
     assertEquals("completed", response.getStatus().value());
     assertNotNull(response.getVideos());
     assertEquals("kept", response.extraFields().get("custom").asText());
-    TaskBillingFacts billing = response.getBilling();
-    assertNotNull(billing);
-    assertEquals(Long.valueOf(12), billing.getReservation().getAmountCents());
-    assertEquals(Long.valueOf(11), billing.getSettlement().getChargedAmountCents());
-    assertEquals(Long.valueOf(1050000), billing.getSettlement().getAmountMicroCents());
-    assertEquals("2026-07-23T12:00:00.000000Z", billing.getRefund().getRefundedAt());
+    assertEquals(0.05d, response.getUsage().getCost());
   }
 
   @Test
   void runPollsUntilCompletedAndKeepsExtraFields() {
     SequenceTransport transport = new SequenceTransport(
         "{\"id\":\"task_789\",\"status\":\"processing\"}",
-        "{\"id\":\"task_789\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}],\"custom\":\"kept\"}");
+        "{\"id\":\"task_789\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}],\"custom\":\"kept\",\"usage\":{\"cost\":0.05}}");
     PixVerseClient client = PixVerseClient.builder().apiKey("sk-test").transport(transport).build();
 
     CompletedTextToVideoResponse response = client.textToVideo().run(
@@ -128,7 +122,7 @@ class PixVerseClientTest {
   void runRejectsCompletedResponseMissingResultField() {
     SequenceTransport transport = new SequenceTransport(
         "{\"id\":\"task_missing\",\"status\":\"processing\"}",
-        "{\"id\":\"task_missing\",\"status\":\"completed\"}");
+        "{\"id\":\"task_missing\",\"status\":\"completed\",\"usage\":{\"cost\":0.05}}");
     PixVerseClient client = PixVerseClient.builder().apiKey("sk-test").transport(transport).build();
 
     assertThrows(
@@ -172,17 +166,17 @@ class PixVerseClientTest {
                   .build(),
           RequestOptions.none()));
 
-      CapturingTransport getTransport = new CapturingTransport("{\"id\":\"task_edit_video\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}]}");
+      CapturingTransport getTransport = new CapturingTransport("{\"id\":\"task_edit_video\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}],\"usage\":{\"cost\":0.05}}");
       PixVerseClient getClient = PixVerseClient.builder().apiKey("sk-test").transport(getTransport).build();
       assertNotNull(getClient.editVideo().get("task_edit_video"));
 
-      CapturingTransport getWithOptionsTransport = new CapturingTransport("{\"id\":\"task_edit_video_options\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}]}");
+      CapturingTransport getWithOptionsTransport = new CapturingTransport("{\"id\":\"task_edit_video_options\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}],\"usage\":{\"cost\":0.05}}");
       PixVerseClient getWithOptionsClient = PixVerseClient.builder().apiKey("sk-test").transport(getWithOptionsTransport).build();
       assertNotNull(getWithOptionsClient.editVideo().get("task_edit_video_options", RequestOptions.none()));
 
       SequenceTransport runTransport = new SequenceTransport(
           "{\"id\":\"task_edit_video_run\",\"status\":\"processing\"}",
-          "{\"id\":\"task_edit_video_run\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}]}");
+          "{\"id\":\"task_edit_video_run\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}],\"usage\":{\"cost\":0.05}}");
       PixVerseClient runClient = PixVerseClient.builder().apiKey("sk-test").transport(runTransport).build();
       CompletedEditVideoResponse runResponse = runClient.editVideo().run(
               EditVideoParams.builder()
@@ -198,7 +192,7 @@ class PixVerseClientTest {
 
       SequenceTransport runWithOptionsTransport = new SequenceTransport(
           "{\"id\":\"task_edit_video_run_options\",\"status\":\"processing\"}",
-          "{\"id\":\"task_edit_video_run_options\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}]}");
+          "{\"id\":\"task_edit_video_run_options\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}],\"usage\":{\"cost\":0.05}}");
       PixVerseClient runWithOptionsClient = PixVerseClient.builder().apiKey("sk-test").transport(runWithOptionsTransport).build();
       assertNotNull(runWithOptionsClient.editVideo().run(
               EditVideoParams.builder()
@@ -238,17 +232,17 @@ class PixVerseClientTest {
                   .build(),
           RequestOptions.none()));
 
-      CapturingTransport getTransport = new CapturingTransport("{\"id\":\"task_extend_video\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}]}");
+      CapturingTransport getTransport = new CapturingTransport("{\"id\":\"task_extend_video\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}],\"usage\":{\"cost\":0.05}}");
       PixVerseClient getClient = PixVerseClient.builder().apiKey("sk-test").transport(getTransport).build();
       assertNotNull(getClient.extendVideo().get("task_extend_video"));
 
-      CapturingTransport getWithOptionsTransport = new CapturingTransport("{\"id\":\"task_extend_video_options\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}]}");
+      CapturingTransport getWithOptionsTransport = new CapturingTransport("{\"id\":\"task_extend_video_options\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}],\"usage\":{\"cost\":0.05}}");
       PixVerseClient getWithOptionsClient = PixVerseClient.builder().apiKey("sk-test").transport(getWithOptionsTransport).build();
       assertNotNull(getWithOptionsClient.extendVideo().get("task_extend_video_options", RequestOptions.none()));
 
       SequenceTransport runTransport = new SequenceTransport(
           "{\"id\":\"task_extend_video_run\",\"status\":\"processing\"}",
-          "{\"id\":\"task_extend_video_run\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}]}");
+          "{\"id\":\"task_extend_video_run\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}],\"usage\":{\"cost\":0.05}}");
       PixVerseClient runClient = PixVerseClient.builder().apiKey("sk-test").transport(runTransport).build();
       CompletedExtendVideoResponse runResponse = runClient.extendVideo().run(
               ExtendVideoParams.builder()
@@ -263,7 +257,7 @@ class PixVerseClientTest {
 
       SequenceTransport runWithOptionsTransport = new SequenceTransport(
           "{\"id\":\"task_extend_video_run_options\",\"status\":\"processing\"}",
-          "{\"id\":\"task_extend_video_run_options\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}]}");
+          "{\"id\":\"task_extend_video_run_options\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}],\"usage\":{\"cost\":0.05}}");
       PixVerseClient runWithOptionsClient = PixVerseClient.builder().apiKey("sk-test").transport(runWithOptionsTransport).build();
       assertNotNull(runWithOptionsClient.extendVideo().run(
               ExtendVideoParams.builder()
@@ -302,17 +296,17 @@ class PixVerseClientTest {
                   .build(),
           RequestOptions.none()));
 
-      CapturingTransport getTransport = new CapturingTransport("{\"id\":\"task_image_to_video\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}]}");
+      CapturingTransport getTransport = new CapturingTransport("{\"id\":\"task_image_to_video\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}],\"usage\":{\"cost\":0.05}}");
       PixVerseClient getClient = PixVerseClient.builder().apiKey("sk-test").transport(getTransport).build();
       assertNotNull(getClient.imageToVideo().get("task_image_to_video"));
 
-      CapturingTransport getWithOptionsTransport = new CapturingTransport("{\"id\":\"task_image_to_video_options\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}]}");
+      CapturingTransport getWithOptionsTransport = new CapturingTransport("{\"id\":\"task_image_to_video_options\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}],\"usage\":{\"cost\":0.05}}");
       PixVerseClient getWithOptionsClient = PixVerseClient.builder().apiKey("sk-test").transport(getWithOptionsTransport).build();
       assertNotNull(getWithOptionsClient.imageToVideo().get("task_image_to_video_options", RequestOptions.none()));
 
       SequenceTransport runTransport = new SequenceTransport(
           "{\"id\":\"task_image_to_video_run\",\"status\":\"processing\"}",
-          "{\"id\":\"task_image_to_video_run\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}]}");
+          "{\"id\":\"task_image_to_video_run\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}],\"usage\":{\"cost\":0.05}}");
       PixVerseClient runClient = PixVerseClient.builder().apiKey("sk-test").transport(runTransport).build();
       CompletedImageToVideoResponse runResponse = runClient.imageToVideo().run(
               ImageToVideoParams.builder()
@@ -327,7 +321,7 @@ class PixVerseClientTest {
 
       SequenceTransport runWithOptionsTransport = new SequenceTransport(
           "{\"id\":\"task_image_to_video_run_options\",\"status\":\"processing\"}",
-          "{\"id\":\"task_image_to_video_run_options\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}]}");
+          "{\"id\":\"task_image_to_video_run_options\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}],\"usage\":{\"cost\":0.05}}");
       PixVerseClient runWithOptionsClient = PixVerseClient.builder().apiKey("sk-test").transport(runWithOptionsTransport).build();
       assertNotNull(runWithOptionsClient.imageToVideo().run(
               ImageToVideoParams.builder()
@@ -366,17 +360,17 @@ class PixVerseClientTest {
                   .build(),
           RequestOptions.none()));
 
-      CapturingTransport getTransport = new CapturingTransport("{\"id\":\"task_text_to_video\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}]}");
+      CapturingTransport getTransport = new CapturingTransport("{\"id\":\"task_text_to_video\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}],\"usage\":{\"cost\":0.05}}");
       PixVerseClient getClient = PixVerseClient.builder().apiKey("sk-test").transport(getTransport).build();
       assertNotNull(getClient.textToVideo().get("task_text_to_video"));
 
-      CapturingTransport getWithOptionsTransport = new CapturingTransport("{\"id\":\"task_text_to_video_options\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}]}");
+      CapturingTransport getWithOptionsTransport = new CapturingTransport("{\"id\":\"task_text_to_video_options\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}],\"usage\":{\"cost\":0.05}}");
       PixVerseClient getWithOptionsClient = PixVerseClient.builder().apiKey("sk-test").transport(getWithOptionsTransport).build();
       assertNotNull(getWithOptionsClient.textToVideo().get("task_text_to_video_options", RequestOptions.none()));
 
       SequenceTransport runTransport = new SequenceTransport(
           "{\"id\":\"task_text_to_video_run\",\"status\":\"processing\"}",
-          "{\"id\":\"task_text_to_video_run\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}]}");
+          "{\"id\":\"task_text_to_video_run\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}],\"usage\":{\"cost\":0.05}}");
       PixVerseClient runClient = PixVerseClient.builder().apiKey("sk-test").transport(runTransport).build();
       CompletedTextToVideoResponse runResponse = runClient.textToVideo().run(
               TextToVideoParams.builder()
@@ -391,7 +385,7 @@ class PixVerseClientTest {
 
       SequenceTransport runWithOptionsTransport = new SequenceTransport(
           "{\"id\":\"task_text_to_video_run_options\",\"status\":\"processing\"}",
-          "{\"id\":\"task_text_to_video_run_options\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}]}");
+          "{\"id\":\"task_text_to_video_run_options\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}],\"usage\":{\"cost\":0.05}}");
       PixVerseClient runWithOptionsClient = PixVerseClient.builder().apiKey("sk-test").transport(runWithOptionsTransport).build();
       assertNotNull(runWithOptionsClient.textToVideo().run(
               TextToVideoParams.builder()
@@ -432,17 +426,17 @@ class PixVerseClientTest {
                   .build(),
           RequestOptions.none()));
 
-      CapturingTransport getTransport = new CapturingTransport("{\"id\":\"task_transition_video\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}]}");
+      CapturingTransport getTransport = new CapturingTransport("{\"id\":\"task_transition_video\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}],\"usage\":{\"cost\":0.05}}");
       PixVerseClient getClient = PixVerseClient.builder().apiKey("sk-test").transport(getTransport).build();
       assertNotNull(getClient.transitionVideo().get("task_transition_video"));
 
-      CapturingTransport getWithOptionsTransport = new CapturingTransport("{\"id\":\"task_transition_video_options\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}]}");
+      CapturingTransport getWithOptionsTransport = new CapturingTransport("{\"id\":\"task_transition_video_options\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}],\"usage\":{\"cost\":0.05}}");
       PixVerseClient getWithOptionsClient = PixVerseClient.builder().apiKey("sk-test").transport(getWithOptionsTransport).build();
       assertNotNull(getWithOptionsClient.transitionVideo().get("task_transition_video_options", RequestOptions.none()));
 
       SequenceTransport runTransport = new SequenceTransport(
           "{\"id\":\"task_transition_video_run\",\"status\":\"processing\"}",
-          "{\"id\":\"task_transition_video_run\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}]}");
+          "{\"id\":\"task_transition_video_run\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}],\"usage\":{\"cost\":0.05}}");
       PixVerseClient runClient = PixVerseClient.builder().apiKey("sk-test").transport(runTransport).build();
       CompletedTransitionVideoResponse runResponse = runClient.transitionVideo().run(
               TransitionVideoParams.builder()
@@ -458,7 +452,7 @@ class PixVerseClientTest {
 
       SequenceTransport runWithOptionsTransport = new SequenceTransport(
           "{\"id\":\"task_transition_video_run_options\",\"status\":\"processing\"}",
-          "{\"id\":\"task_transition_video_run_options\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}]}");
+          "{\"id\":\"task_transition_video_run_options\",\"status\":\"completed\",\"videos\":[{\"url\":\"https://file.runapi.ai/generated\"}],\"usage\":{\"cost\":0.05}}");
       PixVerseClient runWithOptionsClient = PixVerseClient.builder().apiKey("sk-test").transport(runWithOptionsTransport).build();
       assertNotNull(runWithOptionsClient.transitionVideo().run(
               TransitionVideoParams.builder()

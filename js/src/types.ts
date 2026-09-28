@@ -1,4 +1,4 @@
-import type { AsyncTaskStatus, TaskBillingResponse, TaskResponse } from '@runapi.ai/core';
+import type { AsyncTaskStatus, TaskResponse } from '@runapi.ai/core';
 
 export type PixVerseModel = 'pixverse-v6';
 export type PixVerseOutputResolution = '360p' | '540p' | '720p' | '1080p';
@@ -38,7 +38,7 @@ export interface ExtendVideoParams extends CommonVideoParams {
   source_task_id: string;
 }
 
-export interface TaskCreateResponse extends TaskBillingResponse {
+export interface TaskCreateResponse {
   id: string;
   status?: AsyncTaskStatus;
 }
