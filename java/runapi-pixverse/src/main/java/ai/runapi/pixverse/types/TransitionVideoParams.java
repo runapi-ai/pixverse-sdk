@@ -17,15 +17,15 @@ public final class TransitionVideoParams {
   private final String lastFrameImageUrl;
 
   private TransitionVideoParams(Builder builder) {
-    this.model = PixverseParamUtils.requireNonBlankTrim(builder.model, "model");
-    this.prompt = PixverseParamUtils.requireNonBlank(builder.prompt, "prompt");
-    this.outputResolution = PixverseParamUtils.requireNonBlank(builder.outputResolution, "outputResolution");
-    this.durationSeconds = java.util.Objects.requireNonNull(builder.durationSeconds, "durationSeconds");
+    this.model = builder.model;
+    this.prompt = builder.prompt;
+    this.outputResolution = builder.outputResolution;
+    this.durationSeconds = builder.durationSeconds;
     this.enableAudio = builder.enableAudio;
     this.seed = builder.seed;
     this.callbackUrl = builder.callbackUrl;
-    this.firstFrameImageUrl = PixverseParamUtils.requireNonBlank(builder.firstFrameImageUrl, "firstFrameImageUrl");
-    this.lastFrameImageUrl = PixverseParamUtils.requireNonBlank(builder.lastFrameImageUrl, "lastFrameImageUrl");
+    this.firstFrameImageUrl = builder.firstFrameImageUrl;
+    this.lastFrameImageUrl = builder.lastFrameImageUrl;
   }
 
   /** Creates a new TransitionVideoParams builder. */
@@ -77,20 +77,20 @@ public final class TransitionVideoParams {
 
     /** Sets the model slug using a string value. */
     public Builder model(String value) {
-      this.model = PixverseParamUtils.requireNonBlankTrim(value, "model");
+      this.model = value;
       return this;
     }
 
 
     /** Sets the text prompt. */
     public Builder prompt(String value) {
-      this.prompt = PixverseParamUtils.requireNonBlank(value, "prompt");
+      this.prompt = value;
       return this;
     }
 
     /** Sets the output resolution. */
     public Builder outputResolution(String value) {
-      this.outputResolution = PixverseParamUtils.requireNonBlank(value, "outputResolution");
+      this.outputResolution = value;
       return this;
     }
 
@@ -114,19 +114,19 @@ public final class TransitionVideoParams {
 
     /** Sets the webhook URL for task completion notifications. */
     public Builder callbackUrl(String value) {
-      this.callbackUrl = PixverseParamUtils.requireNonBlank(value, "callbackUrl");
+      this.callbackUrl = value;
       return this;
     }
 
     /** Sets the first frame image URL. */
     public Builder firstFrameImageUrl(String value) {
-      this.firstFrameImageUrl = PixverseParamUtils.requireNonBlank(value, "firstFrameImageUrl");
+      this.firstFrameImageUrl = value;
       return this;
     }
 
     /** Sets the last frame image URL. */
     public Builder lastFrameImageUrl(String value) {
-      this.lastFrameImageUrl = PixverseParamUtils.requireNonBlank(value, "lastFrameImageUrl");
+      this.lastFrameImageUrl = value;
       return this;
     }
 

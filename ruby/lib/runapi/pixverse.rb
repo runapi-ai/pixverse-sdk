@@ -2,7 +2,6 @@
 
 require "runapi/core"
 require_relative "pixverse/types"
-require_relative "pixverse/contract_gen"
 require_relative "pixverse/resources/edit_video"
 require_relative "pixverse/resources/image_to_video"
 require_relative "pixverse/resources/text_to_video"

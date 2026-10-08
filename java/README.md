@@ -6,7 +6,7 @@ Gradle:
 
 ```kotlin
 dependencies {
-  implementation("ai.runapi:runapi-pixverse:0.1.1")
+  implementation("ai.runapi:runapi-pixverse:0.2.0")
 }
 ```
 
@@ -16,7 +16,7 @@ Maven:
 <dependency>
   <groupId>ai.runapi</groupId>
   <artifactId>runapi-pixverse</artifactId>
-  <version>0.1.1</version>
+  <version>0.2.0</version>
 </dependency>
 ```
 

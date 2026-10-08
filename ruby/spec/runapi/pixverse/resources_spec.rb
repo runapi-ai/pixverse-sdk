@@ -32,9 +32,4 @@ RSpec.describe "PixVerse resources" do
       expect(resource.get("task_123").id).to eq("task_123")
     end
   end
-
-  it "validates required fields from the generated contract" do
-    resource = RunApi::PixVerse::Resources::TextToVideo.new(http)
-    expect { resource.create(**common) }.to raise_error(RunApi::Core::ValidationError, /aspect_ratio is required/)
-  end
 end

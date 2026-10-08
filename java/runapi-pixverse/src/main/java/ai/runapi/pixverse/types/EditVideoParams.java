@@ -17,15 +17,15 @@ public final class EditVideoParams {
   private final String aspectRatio;
 
   private EditVideoParams(Builder builder) {
-    this.model = PixverseParamUtils.requireNonBlankTrim(builder.model, "model");
-    this.prompt = PixverseParamUtils.requireNonBlank(builder.prompt, "prompt");
-    this.outputResolution = PixverseParamUtils.requireNonBlank(builder.outputResolution, "outputResolution");
-    this.durationSeconds = java.util.Objects.requireNonNull(builder.durationSeconds, "durationSeconds");
+    this.model = builder.model;
+    this.prompt = builder.prompt;
+    this.outputResolution = builder.outputResolution;
+    this.durationSeconds = builder.durationSeconds;
     this.enableAudio = builder.enableAudio;
     this.seed = builder.seed;
     this.callbackUrl = builder.callbackUrl;
-    this.referenceImageUrls = PixverseParamUtils.requiredStrings(builder.referenceImageUrls, "referenceImageUrls");
-    this.aspectRatio = PixverseParamUtils.requireNonBlank(builder.aspectRatio, "aspectRatio");
+    this.referenceImageUrls = PixverseParamUtils.strings(builder.referenceImageUrls);
+    this.aspectRatio = builder.aspectRatio;
   }
 
   /** Creates a new EditVideoParams builder. */
@@ -77,20 +77,20 @@ public final class EditVideoParams {
 
     /** Sets the model slug using a string value. */
     public Builder model(String value) {
-      this.model = PixverseParamUtils.requireNonBlankTrim(value, "model");
+      this.model = value;
       return this;
     }
 
 
     /** Sets the text prompt. */
     public Builder prompt(String value) {
-      this.prompt = PixverseParamUtils.requireNonBlank(value, "prompt");
+      this.prompt = value;
       return this;
     }
 
     /** Sets the output resolution. */
     public Builder outputResolution(String value) {
-      this.outputResolution = PixverseParamUtils.requireNonBlank(value, "outputResolution");
+      this.outputResolution = value;
       return this;
     }
 
@@ -114,7 +114,7 @@ public final class EditVideoParams {
 
     /** Sets the webhook URL for task completion notifications. */
     public Builder callbackUrl(String value) {
-      this.callbackUrl = PixverseParamUtils.requireNonBlank(value, "callbackUrl");
+      this.callbackUrl = value;
       return this;
     }
 
@@ -126,7 +126,7 @@ public final class EditVideoParams {
 
     /** Sets the output aspect ratio. */
     public Builder aspectRatio(String value) {
-      this.aspectRatio = PixverseParamUtils.requireNonBlank(value, "aspectRatio");
+      this.aspectRatio = value;
       return this;
     }
 

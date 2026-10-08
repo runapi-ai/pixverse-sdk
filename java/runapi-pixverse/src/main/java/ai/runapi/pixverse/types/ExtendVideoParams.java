@@ -16,14 +16,14 @@ public final class ExtendVideoParams {
   private final String sourceTaskId;
 
   private ExtendVideoParams(Builder builder) {
-    this.model = PixverseParamUtils.requireNonBlankTrim(builder.model, "model");
-    this.prompt = PixverseParamUtils.requireNonBlank(builder.prompt, "prompt");
-    this.outputResolution = PixverseParamUtils.requireNonBlank(builder.outputResolution, "outputResolution");
-    this.durationSeconds = java.util.Objects.requireNonNull(builder.durationSeconds, "durationSeconds");
+    this.model = builder.model;
+    this.prompt = builder.prompt;
+    this.outputResolution = builder.outputResolution;
+    this.durationSeconds = builder.durationSeconds;
     this.enableAudio = builder.enableAudio;
     this.seed = builder.seed;
     this.callbackUrl = builder.callbackUrl;
-    this.sourceTaskId = PixverseParamUtils.requireNonBlank(builder.sourceTaskId, "sourceTaskId");
+    this.sourceTaskId = builder.sourceTaskId;
   }
 
   /** Creates a new ExtendVideoParams builder. */
@@ -73,20 +73,20 @@ public final class ExtendVideoParams {
 
     /** Sets the model slug using a string value. */
     public Builder model(String value) {
-      this.model = PixverseParamUtils.requireNonBlankTrim(value, "model");
+      this.model = value;
       return this;
     }
 
 
     /** Sets the text prompt. */
     public Builder prompt(String value) {
-      this.prompt = PixverseParamUtils.requireNonBlank(value, "prompt");
+      this.prompt = value;
       return this;
     }
 
     /** Sets the output resolution. */
     public Builder outputResolution(String value) {
-      this.outputResolution = PixverseParamUtils.requireNonBlank(value, "outputResolution");
+      this.outputResolution = value;
       return this;
     }
 
@@ -110,13 +110,13 @@ public final class ExtendVideoParams {
 
     /** Sets the webhook URL for task completion notifications. */
     public Builder callbackUrl(String value) {
-      this.callbackUrl = PixverseParamUtils.requireNonBlank(value, "callbackUrl");
+      this.callbackUrl = value;
       return this;
     }
 
     /** Sets the source task ID. */
     public Builder sourceTaskId(String value) {
-      this.sourceTaskId = PixverseParamUtils.requireNonBlank(value, "sourceTaskId");
+      this.sourceTaskId = value;
       return this;
     }
 

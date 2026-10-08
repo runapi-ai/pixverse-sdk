@@ -6,7 +6,6 @@ from typing import Any, Optional
 
 from runapi.core import Resource, RequestOptions
 
-from ..contract_gen import CONTRACT
 from ..types import CompletedEditVideoResponse, EditVideoResponse
 
 
@@ -39,7 +38,6 @@ class EditVideo(Resource):
             The task creation result with an id.
         """
         compacted = self._compact_params(params)
-        self._validate_contract(CONTRACT["edit-video"], compacted)
         return self._request("post", self.ENDPOINT, body=compacted, options=options)
 
     def get(self, id: str, options: Optional[RequestOptions] = None) -> Any:

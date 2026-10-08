@@ -32,7 +32,6 @@ module RunApi
         # @return [RunApi::PixVerse::Types::TransitionVideoResponse] task creation result with id
         def create(options: nil, **params)
           params = compact_params(params)
-          validate_params!(params)
           request(:post, ENDPOINT, body: params, options: options)
         end
 
@@ -42,12 +41,6 @@ module RunApi
         # @return [RunApi::PixVerse::Types::TransitionVideoResponse] current task status
         def get(id, options: nil)
           request(:get, "#{ENDPOINT}/#{id}", options: options)
-        end
-
-        private
-
-        def validate_params!(params)
-          validate_contract!(CONTRACT["transition-video"], params)
         end
       end
     end

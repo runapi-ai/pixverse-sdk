@@ -1,7 +1,7 @@
 import pytest
 
 from runapi.core import config
-from runapi.core.errors import AuthenticationError, ValidationError
+from runapi.core.errors import AuthenticationError
 from runapi.pixverse import PixVerseClient
 from runapi.pixverse.resources import EditVideo, ExtendVideo, ImageToVideo, TextToVideo, TransitionVideo
 
@@ -64,9 +64,3 @@ def test_create_and_get_request_shape(resource_name, endpoint, extra, expected_k
     assert fake.calls[0] == ("post", f"/api/v1/pixverse/{endpoint}", params)
     assert expected_key in fake.calls[0][2]
     assert fake.calls[1] == ("get", f"/api/v1/pixverse/{endpoint}/task_123", None)
-
-
-def test_contract_validation_rejects_missing_required_field():
-    client = PixVerseClient(api_key="k", http_client=FakeHttp())
-    with pytest.raises(ValidationError, match="aspect_ratio is required"):
-        client.text_to_video.create(**common_params())

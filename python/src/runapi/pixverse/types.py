@@ -4,8 +4,6 @@ from runapi.core import BaseModel, TaskResponse, optional, required
 
 MODEL = "pixverse-v6"
 CHARACTER_MODEL = MODEL
-DURATION_RANGE = range(1, 16)
-SEED_RANGE = range(0, 2_147_483_648)
 
 class MediaUrl(BaseModel):
     url = optional(str)
